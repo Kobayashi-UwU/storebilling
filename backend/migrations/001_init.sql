@@ -1,0 +1,29 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+CREATE TABLE IF NOT EXISTS items (
+  id UUID PRIMARY KEY,
+  name TEXT NOT NULL,
+  image_base64 TEXT,
+  price FLOAT NOT NULL,
+  stock INT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS bills (
+  id UUID PRIMARY KEY,
+  bill_date DATE NOT NULL,
+  total_price FLOAT NOT NULL,
+  final_price FLOAT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS bill_items (
+  id UUID PRIMARY KEY,
+  bill_id UUID REFERENCES bills(id) ON DELETE CASCADE,
+  item_id UUID REFERENCES items(id) ON DELETE SET NULL,
+  quantity INT NOT NULL,
+  price_per_unit FLOAT NOT NULL,
+  total_price FLOAT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
